@@ -10,6 +10,7 @@ import com.example.coroutinesapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy(LazyThreadSafetyMode.NONE) {
@@ -34,9 +35,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun demoDownload() {
+    private suspend fun demoDownload() {
         for (i in 1..100000) {
             Log.d("TAGY", "Number of downloading $i in ${Thread.currentThread().name}")
+
+            withContext(Dispatchers.Main) {
+                binding.clickToDownloadText.text = i.toString()
+            }
         }
     }
 }
