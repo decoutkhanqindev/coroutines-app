@@ -1,20 +1,42 @@
 package com.example.coroutinesapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.coroutinesapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+    private val binding by lazy(LazyThreadSafetyMode.NONE) {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private var counter = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        setContentView(binding.root)
+
+        binding.clickToCountBtn.setOnClickListener {
+            counter++
+            binding.clickToCountText.text = counter.toString()
+        }
+
+        binding.clickToDownloadBtn.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                demoDownload()
+            }
+        }
+    }
+
+    private fun demoDownload() {
+        for (i in 1..100000) {
+            Log.d("TAGY", "Number of downloading $i in ${Thread.currentThread().name}")
         }
     }
 }
